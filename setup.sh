@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 dateFromServer=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
 
 # // Root Checking
@@ -45,17 +45,6 @@ export BOLD="\e[1m"
 export WARNING="${RED}\e[5m"
 export UNDERLINE="\e[4m"
 
-clear
-#System version number
-if [ "${EUID}" -ne 0 ]; then
-		echo "You need to run this script as root"
-		exit 1
-fi
-if [ "$(systemd-detect-virt)" == "openvz" ]; then
-		echo "OpenVZ is not supported"
-		exit 1
-fi
-
 localip=$(hostname -I | cut -d\  -f1)
 hst=( `hostname` )
 dart=$(cat /etc/hosts | grep -w `hostname` | awk '{print $2}')
@@ -69,39 +58,6 @@ sleep 2
 echo -e "[ ${green}INFO${NC} ] Preparing the install file"
 apt install git curl -y >/dev/null 2>&1
 echo -e "[ ${green}INFO${NC} ] installation file is ready"
-sleep 2
-echo -ne "[ ${green}INFO${NC} ] Check your permission : "
-
-PERMISSION
-if [ -f /home/needupdate ]; then
-red "Your script need to update first !"
-exit 0
-
-# // cek old script
-if [[ -r /etc/xray/domain ]]; then
-clear
-echo -e "${INFO} Having Script Detected !"
-echo -e "${INFO} If You Replacing Script, All Client Data On This VPS Will Be Cleanup !"
-read -p "Are You Sure Wanna Replace Script ? (Y/N) " josdong
-if [[ $josdong == "Y" ]]; then
-clear
-echo -e "${INFO} Starting Replacing Script !"
-elif [[ $josdong == "y" ]]; then
-clear
-echo -e "${INFO} Starting Replacing Script !"
-rm -rf /var/lib/scrz-prem 
-elif [[ $josdong == "N" ]]; then
-echo -e "${INFO} Action Canceled !"
-exit 1
-elif [[ $josdong == "n" ]]; then
-echo -e "${INFO} Action Canceled !"
-exit 1
-else
-echo -e "${EROR} Your Input Is Wrong !"
-exit 1
-fi
-clear
-fi
 echo -e "${GREEN}Starting Installation............${NC}"
 # // Go To Root Directory
 cd /root/
@@ -494,7 +450,7 @@ echo ""
 echo ""
 echo "------------------------------------------------------------"
 echo ""
-echo "===============-[ Script Created By Kenn Hiroyuki ]-==============="
+echo "===============-[ Script Created By AtaLioMego ]-==============="
 echo -e ""
 echo ""
 echo "" | tee -a log-install.txt
@@ -511,4 +467,4 @@ read answer
 if [ "$answer" == "${answer#[Yy]}" ] ;then
 exit 0
 else
-reboot
+Reboot
