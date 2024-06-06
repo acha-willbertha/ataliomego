@@ -1,5 +1,4 @@
-Domain1 vpnmurah.biz.id
-Domain2 vpnmurah.me
-Domain3 autoscript.ninja
+Domain1 dragndrop.biz.id
+Domain2 nirandroid.me
 
-Jumlah 3
+Jumlah 2
