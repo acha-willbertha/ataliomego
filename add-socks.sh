@@ -1,7 +1,7 @@
 #!/bin/bash
 # Menu For Script
 # Edition : Stable Edition V1.0
-# Auther  : 
+# Author  : 
 # (C) Copyright 2021-2022
 # =========================================
 BIBlack='\033[1;90m'      # Black
