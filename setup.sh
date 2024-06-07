@@ -45,6 +45,17 @@ export BOLD="\e[1m"
 export WARNING="${RED}\e[5m"
 export UNDERLINE="\e[4m"
 
+clear
+#System version number
+if [ "${EUID}" -ne 0 ]; then
+		echo "You need to run this script as root"
+		exit 1
+fi
+if [ "$(systemd-detect-virt)" == "openvz" ]; then
+		echo "OpenVZ is not supported"
+		exit 1
+fi
+
 localip=$(hostname -I | cut -d\  -f1)
 hst=( `hostname` )
 dart=$(cat /etc/hosts | grep -w `hostname` | awk '{print $2}')
@@ -53,11 +64,37 @@ echo "$localip $(hostname)" >> /etc/hosts
 fi
 mkdir -p /etc/xray
 
-echo -e "${green} Welcome To AtaLioMego Tunnel......${NC} "
+echo -e "${green} Welcome To AtaLioMego AutoScript......${NC} "
 sleep 2
 echo -e "[ ${green}INFO${NC} ] Preparing the install file"
 apt install git curl -y >/dev/null 2>&1
 echo -e "[ ${green}INFO${NC} ] installation file is ready"
+
+# // cek old script
+if [[ -r /etc/xray/domain ]]; then
+clear
+echo -e "${INFO} Having Script Detected !"
+echo -e "${INFO} If You Replacing Script, All Client Data On This VPS Will Be Cleanup !"
+read -p "Are You Sure Wanna Replace Script ? (Y/N) " josdong
+if [[ $josdong == "Y" ]]; then
+clear
+echo -e "${INFO} Starting Replacing Script !"
+elif [[ $josdong == "y" ]]; then
+clear
+echo -e "${INFO} Starting Replacing Script !"
+rm -rf /var/lib/scrz-prem 
+elif [[ $josdong == "N" ]]; then
+echo -e "${INFO} Action Canceled !"
+exit 1
+elif [[ $josdong == "n" ]]; then
+echo -e "${INFO} Action Canceled !"
+exit 1
+else
+echo -e "${EROR} Your Input Is Wrong !"
+exit 1
+fi
+clear
+fi
 echo -e "${GREEN}Starting Installation............${NC}"
 # // Go To Root Directory
 cd /root/
@@ -80,137 +117,6 @@ apt update -y
 apt-get --reinstall --fix-missing install -y sudo dpkg psmisc socat jq ruby wondershaper python2 tmux nmap bzip2 gzip coreutils wget screen rsyslog iftop htop net-tools zip unzip wget vim net-tools curl nano sed screen gnupg gnupg1 bc apt-transport-https build-essential gcc g++ automake make autoconf perl m4 dos2unix dropbear libreadline-dev zlib1g-dev libssl-dev dirmngr libxml-parser-perl neofetch git lsof iptables iptables-persistent
 apt-get --reinstall --fix-missing install -y libreadline-dev zlib1g-dev libssl-dev python2 screen curl jq bzip2 gzip coreutils rsyslog iftop htop zip unzip net-tools sed gnupg gnupg1 bc sudo apt-transport-https build-essential dirmngr libxml-parser-perl neofetch screenfetch git lsof openssl easy-rsa fail2ban tmux vnstat dropbear libsqlite3-dev socat cron bash-completion ntpdate xz-utils sudo apt-transport-https gnupg2 gnupg1 dnsutils lsb-release chrony
 gem install lolcat
-
-# // Download Data
-echo -e "${GREEN}Download Data${NC}"
-wget -q -O /usr/bin/add-ws "https://raw.githubusercontent.com/kenDevXD/1/main/add-ws.sh"
-wget -q -O /usr/bin/add-ssws "https://raw.githubusercontent.com/kenDevXD/1/main/add-ssws.sh"
-#wget -q -O /usr/bin/add-socks "https://raw.githubusercontent.com/kenDevXD/1/main/add-socks.sh"
-wget -q -O /usr/bin/add-vless "https://raw.githubusercontent.com/kenDevXD/1/main/add-vless.sh"
-wget -q -O /usr/bin/add-tr "https://raw.githubusercontent.com/kenDevXD/1/main/add-tr.sh"
-#wget -q -O /usr/bin/add-trgo "https://raw.githubusercontent.com/kenDevXD/1/main/add-trgo.sh"
-wget -q -O /usr/bin/autoreboot "https://raw.githubusercontent.com/kenDevXD/1/main/autoreboot.sh"
-wget -q -O /usr/bin/restart "https://raw.githubusercontent.com/kenDevXD/1/main/restart.sh"
-wget -q -O /usr/bin/tendang "https://raw.githubusercontent.com/kenDevXD/1/main/tendang.sh"
-wget -q -O /usr/bin/clearlog "https://raw.githubusercontent.com/kenDevXD/1/main/clearlog.sh"
-wget -q -O /usr/bin/running "https://raw.githubusercontent.com/kenDevXD/1/main/running.sh"
-wget -q -O /usr/bin/cek-trafik "https://raw.githubusercontent.com/kenDevXD/1/main/cek-trafik.sh"
-wget -q -O /usr/bin/cek-speed "https://raw.githubusercontent.com/kenDevXD/1/main/speedtes_cli.py"
-wget -q -O /usr/bin/cek-bandwidth "https://raw.githubusercontent.com/kenDevXD/1/main/cek-bandwidth.sh"
-#wget -q -O /usr/bin/cek-ram "https://raw.githubusercontent.com/kenDevXD/0/main/ram.sh"
-wget -q -O /usr/bin/limit-speed "https://raw.githubusercontent.com/kenDevXD/1/main/limit-speed.sh"
-wget -q -O /usr/bin/menu-vless "https://raw.githubusercontent.com/kenDevXD/1/main/menu-vless.sh"
-wget -q -O /usr/bin/menu-vmess "https://raw.githubusercontent.com/kenDevXD/1/main/menu-vmess.sh"
-#wget -q -O /usr/bin/menu-socks "https://raw.githubusercontent.com/kenDevXD/1/main/menu-socks.sh"
-wget -q -O /usr/bin/menu-ss "https://raw.githubusercontent.com/kenDevXD/1/main/menu-ss.sh"
-wget -q -O /usr/bin/menu-trojan "https://raw.githubusercontent.com/kenDevXD/1/main/menu-trojan.sh"
-#wget -q -O /usr/bin/menu-trgo "https://raw.githubusercontent.com/kenDevXD/1/main/menu-trgo.sh"
-wget -q -O /usr/bin/menu-ssh "https://raw.githubusercontent.com/myvpn1/1/main/menu-ssh.sh"
-#wget -q -O /usr/bin/menu-bckp "https://raw.githubusercontent.com/kenDevXD/1/main/menu-bckp-telegram.sh"
-wget -q -O /usr/bin/menu-bckp "https://raw.githubusercontent.com/kenDevXD/1/main/menu-bckp-github.sh"
-#wget -q -O /usr/bin/bckp "https://raw.githubusercontent.com/kenDevXD/1/main/bckpbot.sh"
-wget -q -O /usr/bin/usernew "https://raw.githubusercontent.com/myvpn1/1/main/usernew.sh"
-wget -q -O /usr/bin/menu "https://raw.githubusercontent.com/myvpn1/1/main/menu.sh"
-wget -q -O /usr/bin/wbm "https://raw.githubusercontent.com/kenDevXD/1/main/webmin.sh"
-wget -q -O /usr/bin/xp "https://raw.githubusercontent.com/kenDevXD/1/main/xp.sh"
-#wget -q -O /usr/bin/update "https://raw.githubusercontent.com/kenDevXD/1/main/update.sh"
-chmod +x /usr/bin/add-ws
-chmod +x /usr/bin/add-ssws
-#chmod +x /usr/bin/add-socks
-chmod +x /usr/bin/add-vless
-chmod +x /usr/bin/add-tr
-#chmod +x /usr/bin/add-trgo
-chmod +x /usr/bin/usernew
-chmod +x /usr/bin/autoreboot
-chmod +x /usr/bin/restart
-chmod +x /usr/bin/tendang
-chmod +x /usr/bin/clearlog
-chmod +x /usr/bin/running
-chmod +x /usr/bin/cek-trafik
-chmod +x /usr/bin/cek-speed
-chmod +x /usr/bin/cek-bandwidth
-#chmod +x /usr/bin/cek-ram
-chmod +x /usr/bin/limit-speed
-chmod +x /usr/bin/menu-vless
-chmod +x /usr/bin/menu-vmess
-chmod +x /usr/bin/menu-ss
-#chmod +x /usr/bin/menu-socks
-chmod +x /usr/bin/menu-trojan
-#chmod +x /usr/bin/menu-trgo
-chmod +x /usr/bin/menu-ssh
-chmod +x /usr/bin/menu-bckp
-chmod +x /usr/bin/menu
-#chmod +x /usr/bin/bckp
-chmod +x /usr/bin/wbm
-chmod +x /usr/bin/xp
-#chmod +x /usr/bin/update
-
-#cat > /etc/cron.d/re_otm <<-END
-#SHELL=/bin/sh
-#PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-#0 7 * * * root /sbin/reboot
-#END
-
-cat > /etc/cron.d/xp_otm <<-END
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-2 0 * * * root /usr/bin/xp
-END
-
-cat > /etc/cron.d/cl_otm <<-END
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-2 1 * * * root /usr/bin/clearlog
-END
-
-cat > /home/re_otm <<-END
-7
-END
-
-service cron restart >/dev/null 2>&1
-service cron reload >/dev/null 2>&1
-
-clear
-cat> /root/.profile << END
-# ~/.profile: executed by Bourne-compatible login shells.
-
-if [ "$BASH" ]; then
-  if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-  fi
-fi
-
-mesg n || true
-clear
-menu
-END
-chmod 644 /root/.profile
-
-if [ -f "/root/log-install.txt" ]; then
-rm -fr /root/log-install.txt 
-fi
-if [ -f "/etc/afak.conf" ]; then
-rm -fr /etc/afak.conf 
-fi
-if [ ! -f "/etc/log-create-user.log" ]; then
-echo "Log All Account " > /etc/log-create-user.log
-fi
-history -c
-aureb=$(cat /home/re_otm)
-b=11
-if [ $aureb -gt $b ]
-then
-gg="PM"
-else
-gg="AM"
-fi
-echo -e "[ ${green}Pleas Wait Update DB ${NC} ]"
-cd
-echo "1.1" >> /home/.ver
-rm -fr /root/limit
-curl -sS ifconfig.me > /etc/myipvps
-echo " "
-echo "=====================-[ Kenn Hiroyuki Premium ]-===================="
 
 # // Update & Upgrade
 apt update -y
@@ -256,10 +162,10 @@ mkdir -p /usr/local/etc/xray
 
 # // String / Request Data
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c4)
-DOMAIN=dragndrop.biz.id
-SUB_DOMAIN=${sub}.dragndrop.biz.id
-CF_ID=joelnd151@gmail.com
-CF_KEY=e8e29760f762c0becbdaaa55dabc0643e8289
+DOMAIN=doubleclick.biz.id
+SUB_DOMAIN=${sub}.doubleclick.biz.id
+CF_ID=88numb@gmail.com
+CF_KEY=d9eea14dd2d11fdf3ccacd8fe3b9da3b16835
 set -euo pipefail
 IP=$(curl -sS ifconfig.me);
 echo "Updating DNS for ${SUB_DOMAIN}..."
@@ -394,20 +300,150 @@ echo -e "$white\033[0;34m+-----------------------------------------+${NC}"
 echo -e " \E[41;1;39m           ? Install Jembot ?            \E[0m$NC"
 echo -e "$white\033[0;34m+-----------------------------------------+${NC}"
 sleep 1 
-wget -q https://raw.githubusercontent.com/myvpn1/1/main/jembot.sh && chmod +x jembot.sh && ./jembot.sh
+wget -q https://raw.githubusercontent.com/acha-willbertha/ataliomego/jembot.sh && chmod +x jembot.sh && ./jembot.sh
 #install ssh-vpn
 echo -e "$white\033[0;34m+-----------------------------------------+${NC}"
 echo -e " \E[41;1;39m          ? Install SSH / WS ?           \E[0m$NC"
 echo -e "$white\033[0;34m+-----------------------------------------+${NC}"
 sleep 1
-wget -q https://raw.githubusercontent.com/myvpn1/1/main/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
+wget -q https://raw.githubusercontent.com/acha-willbertha/ataliomego/main/ssh-vpn.sh && chmod +x ssh-vpn.sh && ./ssh-vpn.sh
 #install ins-xray
 echo -e "$white\033[0;34m+-----------------------------------------+${NC}"
 echo -e " \E[41;1;39m            ? Install Xray ?             \E[0m$NC"
 echo -e "$white\033[0;34m+-----------------------------------------+${NC}"
 sleep 1 
-wget -q https://raw.githubusercontent.com/myvpn1/1/main/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
+wget -q https://raw.githubusercontent.com/acha-willbertha/ataliomego/main/ins-xray.sh && chmod +x ins-xray.sh && ./ins-xray.sh
 
+# // Download Data
+echo -e "${GREEN}Download Data${NC}"
+wget -q -O /usr/bin/add-ws "https://raw.githubusercontent.com/kenDevXD/1/main/add-ws.sh"
+wget -q -O /usr/bin/add-ssws "https://raw.githubusercontent.com/kenDevXD/1/main/add-ssws.sh"
+#wget -q -O /usr/bin/add-socks "https://raw.githubusercontent.com/kenDevXD/1/main/add-socks.sh"
+wget -q -O /usr/bin/add-vless "https://raw.githubusercontent.com/kenDevXD/1/main/add-vless.sh"
+wget -q -O /usr/bin/add-tr "https://raw.githubusercontent.com/kenDevXD/1/main/add-tr.sh"
+#wget -q -O /usr/bin/add-trgo "https://raw.githubusercontent.com/kenDevXD/1/main/add-trgo.sh"
+wget -q -O /usr/bin/autoreboot "https://raw.githubusercontent.com/kenDevXD/1/main/autoreboot.sh"
+wget -q -O /usr/bin/restart "https://raw.githubusercontent.com/kenDevXD/1/main/restart.sh"
+wget -q -O /usr/bin/tendang "https://raw.githubusercontent.com/kenDevXD/1/main/tendang.sh"
+wget -q -O /usr/bin/clearlog "https://raw.githubusercontent.com/kenDevXD/1/main/clearlog.sh"
+wget -q -O /usr/bin/running "https://raw.githubusercontent.com/kenDevXD/1/main/running.sh"
+wget -q -O /usr/bin/cek-trafik "https://raw.githubusercontent.com/kenDevXD/1/main/cek-trafik.sh"
+wget -q -O /usr/bin/cek-speed "https://raw.githubusercontent.com/kenDevXD/1/main/speedtes_cli.py"
+wget -q -O /usr/bin/cek-bandwidth "https://raw.githubusercontent.com/kenDevXD/1/main/cek-bandwidth.sh"
+#wget -q -O /usr/bin/cek-ram "https://raw.githubusercontent.com/kenDevXD/0/main/ram.sh"
+wget -q -O /usr/bin/limit-speed "https://raw.githubusercontent.com/kenDevXD/1/main/limit-speed.sh"
+wget -q -O /usr/bin/menu-vless "https://raw.githubusercontent.com/kenDevXD/1/main/menu-vless.sh"
+wget -q -O /usr/bin/menu-vmess "https://raw.githubusercontent.com/kenDevXD/1/main/menu-vmess.sh"
+#wget -q -O /usr/bin/menu-socks "https://raw.githubusercontent.com/kenDevXD/1/main/menu-socks.sh"
+wget -q -O /usr/bin/menu-ss "https://raw.githubusercontent.com/kenDevXD/1/main/menu-ss.sh"
+wget -q -O /usr/bin/menu-trojan "https://raw.githubusercontent.com/kenDevXD/1/main/menu-trojan.sh"
+#wget -q -O /usr/bin/menu-trgo "https://raw.githubusercontent.com/kenDevXD/1/main/menu-trgo.sh"
+wget -q -O /usr/bin/menu-ssh "https://raw.githubusercontent.com/myvpn1/1/main/menu-ssh.sh"
+#wget -q -O /usr/bin/menu-bckp "https://raw.githubusercontent.com/kenDevXD/1/main/menu-bckp-telegram.sh"
+wget -q -O /usr/bin/menu-bckp "https://raw.githubusercontent.com/kenDevXD/1/main/menu-bckp-github.sh"
+#wget -q -O /usr/bin/bckp "https://raw.githubusercontent.com/kenDevXD/1/main/bckpbot.sh"
+wget -q -O /usr/bin/usernew "https://raw.githubusercontent.com/myvpn1/1/main/usernew.sh"
+wget -q -O /usr/bin/menu "https://raw.githubusercontent.com/myvpn1/1/main/menu.sh"
+wget -q -O /usr/bin/wbm "https://raw.githubusercontent.com/kenDevXD/1/main/webmin.sh"
+wget -q -O /usr/bin/xp "https://raw.githubusercontent.com/kenDevXD/1/main/xp.sh"
+#wget -q -O /usr/bin/update "https://raw.githubusercontent.com/kenDevXD/1/main/update.sh"
+chmod +x /usr/bin/add-ws
+chmod +x /usr/bin/add-ssws
+#chmod +x /usr/bin/add-socks
+chmod +x /usr/bin/add-vless
+chmod +x /usr/bin/add-tr
+#chmod +x /usr/bin/add-trgo
+chmod +x /usr/bin/usernew
+chmod +x /usr/bin/autoreboot
+chmod +x /usr/bin/restart
+chmod +x /usr/bin/tendang
+chmod +x /usr/bin/clearlog
+chmod +x /usr/bin/running
+chmod +x /usr/bin/cek-trafik
+chmod +x /usr/bin/cek-speed
+chmod +x /usr/bin/cek-bandwidth
+#chmod +x /usr/bin/cek-ram
+chmod +x /usr/bin/limit-speed
+chmod +x /usr/bin/menu-vless
+chmod +x /usr/bin/menu-vmess
+chmod +x /usr/bin/menu-ss
+#chmod +x /usr/bin/menu-socks
+chmod +x /usr/bin/menu-trojan
+#chmod +x /usr/bin/menu-trgo
+chmod +x /usr/bin/menu-ssh
+chmod +x /usr/bin/menu-bckp
+chmod +x /usr/bin/menu
+#chmod +x /usr/bin/bckp
+chmod +x /usr/bin/wbm
+chmod +x /usr/bin/xp
+#chmod +x /usr/bin/update
+
+#cat > /etc/cron.d/re_otm <<-END
+#SHELL=/bin/sh
+#PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+#0 7 * * * root /sbin/reboot
+#END
+
+cat > /etc/cron.d/xp_otm <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+2 0 * * * root /usr/bin/xp
+END
+
+cat > /etc/cron.d/cl_otm <<-END
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+2 1 * * * root /usr/bin/clearlog
+END
+
+cat > /home/re_otm <<-END
+7
+END
+
+service cron restart >/dev/null 2>&1
+service cron reload >/dev/null 2>&1
+
+clear
+cat> /root/.profile << END
+# ~/.profile: executed by Bourne-compatible login shells.
+
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+mesg n || true
+clear
+menu
+END
+chmod 644 /root/.profile
+
+if [ -f "/root/log-install.txt" ]; then
+rm -fr /root/log-install.txt 
+fi
+if [ -f "/etc/afak.conf" ]; then
+rm -fr /etc/afak.conf 
+fi
+if [ ! -f "/etc/log-create-user.log" ]; then
+echo "Log All Account " > /etc/log-create-user.log
+fi
+history -c
+aureb=$(cat /home/re_otm)
+b=11
+if [ $aureb -gt $b ]
+then
+gg="PM"
+else
+gg="AM"
+fi
+
+cd
+echo "1.1" >> /home/.ver
+rm -fr /root/limit
+curl -sS ifconfig.me > /etc/myipvps
+echo " "
+echo "=====================-[ Kenn Hiroyuki Premium ]-===================="
 echo ""
 echo "------------------------------------------------------------"
 echo ""
@@ -451,7 +487,7 @@ echo ""
 echo ""
 echo "------------------------------------------------------------"
 echo ""
-echo "===============-[ Script Created By AtaLioMego ]-==============="
+echo "===============-[ Script Created By Kenn Hiroyuki ]-==============="
 echo -e ""
 echo ""
 echo "" | tee -a log-install.txt
@@ -468,4 +504,4 @@ read answer
 if [ "$answer" == "${answer#[Yy]}" ] ;then
 exit 0
 else
-Reboot
+reboot
